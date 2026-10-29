@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny for unmanaged collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // NSS Volunteers and Users
+    match /nss_users/{userId} {
+      allow read: if true;
+      allow write: if isValidId(userId);
+    }
+
+    // NSS Activities
+    match /nss_activities/{activityId} {
+      allow read: if true;
+      allow write: if isValidId(activityId);
+    }
+
+    // Questions and Feedbacks
+    match /nss_feedbacks/{feedbackId} {
+      allow read: if true;
+      allow write: if isValidId(feedbackId);
+    }
+
+    // Community Polls
+    match /nss_polls/{pollId} {
+      allow read: if true;
+      allow write: if isValidId(pollId);
+    }
+
+    // Activity & Community Chats
+    match /nss_chats/{chatId} {
+      allow read: if true;
+      allow write: if isValidId(chatId);
+    }
+
+    // Legacy or test connection
+    match /test/{docId} {
+      allow read: if true;
+    }
+  }
+}

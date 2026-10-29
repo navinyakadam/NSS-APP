@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "NSS Volunteer profile and role specifications",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "volunteerId": { "type": "string", "maxLength": 64 },
+        "email": { "type": "string", "maxLength": 256 },
+        "fullName": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "grade": { "type": "string", "maxLength": 50 },
+        "stream": { "type": "string", "maxLength": 100 },
+        "division": { "type": "string", "maxLength": 20 },
+        "rollNumber": { "type": "string", "maxLength": 50 },
+        "role": { "type": "string", "enum": ["volunteer", "core", "po"] },
+        "status": { "type": "string", "maxLength": 30 },
+        "joiningDate": { "type": "string", "maxLength": 50 },
+        "participationCount": { "type": "number" },
+        "hoursContributed": { "type": "number" }
+      },
+      "required": ["uid", "volunteerId", "email", "fullName", "role"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "NSS volunteering events and drives",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 3000 },
+        "date": { "type": "string", "maxLength": 50 },
+        "venue": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "capacity": { "type": "number" },
+        "registeredCount": { "type": "number" },
+        "status": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "title", "date", "venue", "category"]
+    }
+  },
+  "firestore": {
+    "/nss_users/{userId}": {
+      "schema": "User",
+      "description": "NSS registered user and volunteer accounts"
+    },
+    "/nss_activities/{activityId}": {
+      "schema": "Activity",
+      "description": "NSS activities noticeboard and events"
+    },
+    "/nss_feedbacks/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Questions and private feedback on activities"
+    },
+    "/nss_polls/{pollId}": {
+      "schema": "Poll",
+      "description": "Volunteering polls and suggestions"
+    },
+    "/nss_chats/{chatId}": {
+      "schema": "Chat",
+      "description": "Group community and activity instruction chats"
+    }
+  }
+}
