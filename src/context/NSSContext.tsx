@@ -56,6 +56,8 @@ interface NSSContextType {
   replyToFeedback: (feedbackId: string, reply: string) => Promise<void>;
   // Polls
   createPoll: (question: string, category: string, optionsText: string[]) => Promise<void>;
+  editPoll: (pollId: string, question: string, optionsText: string[]) => Promise<void>;
+  deletePoll: (pollId: string) => Promise<void>;
   voteInPoll: (pollId: string, optionId: string) => Promise<void>;
   addPollComment: (pollId: string, text: string) => Promise<void>;
   // Chats
@@ -592,6 +594,40 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setDoc(doc(db, 'nss_polls', newId), newPoll).catch(console.warn);
   };
 
+  const editPoll = async (pollId: string, question: string, optionsText: string[]) => {
+    if (!currentUser || currentUser.role === 'volunteer') {
+      alert('Only Core Team and Programme Officers can edit polls.');
+      return;
+    }
+
+    setPolls((prev) =>
+      prev.map((p) => {
+        if (p.id !== pollId) return p;
+        const updatedOptions = optionsText.map((text, idx) => {
+          const existing = p.options[idx];
+          return {
+            id: existing ? existing.id : `opt_${Date.now()}_${idx}`,
+            text: text.trim(),
+            votes: existing ? existing.votes : [],
+          };
+        });
+        const updated = {
+          ...p,
+          question: question.trim(),
+          options: updatedOptions,
+        };
+        setDoc(doc(db, 'nss_polls', pollId), updated, { merge: true }).catch(console.warn);
+        return updated;
+      })
+    );
+  };
+
+  const deletePoll = async (pollId: string) => {
+    if (!currentUser || currentUser.role === 'volunteer') return;
+    setPolls((prev) => prev.filter((p) => p.id !== pollId));
+    deleteDoc(doc(db, 'nss_polls', pollId)).catch(console.warn);
+  };
+
   const voteInPoll = async (pollId: string, optionId: string) => {
     if (!currentUser) return;
 
@@ -696,6 +732,8 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         postFeedbackOrQuestion,
         replyToFeedback,
         createPoll,
+        editPoll,
+        deletePoll,
         voteInPoll,
         addPollComment,
         sendMessage,

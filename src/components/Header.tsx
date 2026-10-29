@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-blue-100 shadow-xs">
+    <header className="sticky top-0 z-40 bg-white border-b border-blue-100 shadow-xs">
       <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
         {/* Left: Brand & NSS Motto */}
         <div className="flex items-center gap-2.5">
@@ -45,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
 
         {/* Right: Notifications & User Role Switcher */}
         <div className="flex items-center gap-2">
+
           {/* Notification Bell */}
           <div className="relative">
             <button
@@ -174,34 +175,35 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
               </button>
             </div>
 
-            <div className="py-4 space-y-1 flex-1">
+            {/* Navigation Options - Solid, non-transparent */}
+            <div className="py-4 space-y-2 flex-1 bg-white opacity-100">
               <button
                 onClick={() => { onNavigateTab?.('home'); setShowMenu(false); }}
-                className="w-full text-left px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm"
+                className="w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-slate-800 bg-[#F8FBFF] hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm border border-blue-50 shadow-2xs transition"
               >
                 🏠 Home Dashboard
               </button>
               <button
                 onClick={() => { onNavigateTab?.('search'); setShowMenu(false); }}
-                className="w-full text-left px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm"
+                className="w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-slate-800 bg-[#F8FBFF] hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm border border-blue-50 shadow-2xs transition"
               >
                 📋 Noticeboard & Activities
               </button>
               <button
                 onClick={() => { onNavigateTab?.('calendar'); setShowMenu(false); }}
-                className="w-full text-left px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm"
+                className="w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-slate-800 bg-[#F8FBFF] hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm border border-blue-50 shadow-2xs transition"
               >
                 📅 Volunteer Schedule & Calendar
               </button>
               <button
                 onClick={() => { onNavigateTab?.('chat'); setShowMenu(false); }}
-                className="w-full text-left px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm"
+                className="w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-slate-800 bg-[#F8FBFF] hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm border border-blue-50 shadow-2xs transition"
               >
                 💬 Community & Activity Chats
               </button>
               <button
                 onClick={() => { onNavigateTab?.('profile'); setShowMenu(false); }}
-                className="w-full text-left px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm"
+                className="w-full text-left px-3.5 py-2.5 rounded-xl font-medium text-slate-800 bg-[#F8FBFF] hover:bg-[#EAF4FF] hover:text-[#1565C0] text-sm border border-blue-50 shadow-2xs transition"
               >
                 👤 My Profile & Contributions
               </button>

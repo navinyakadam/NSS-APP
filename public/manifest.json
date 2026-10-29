@@ -1,0 +1,50 @@
+{
+  "id": "/",
+  "name": "NSS Volunteer Portal - Alegreya College",
+  "short_name": "NSS Portal",
+  "description": "Official Alegreya College NSS Volunteer Management App for activities, attendance, and coordination.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8FBFF",
+  "theme_color": "#1565C0",
+  "categories": ["education", "social", "productivity"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Noticeboard",
+      "short_name": "Notices",
+      "description": "View upcoming volunteering activities",
+      "url": "/?tab=search",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Calendar",
+      "short_name": "Schedule",
+      "description": "View volunteer schedule",
+      "url": "/?tab=calendar",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}
