@@ -1,35 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#123B75" />
-      <stop offset="100%" stop-color="#1565C0" />
+    <!-- Official NSS Navy Blue & Crimson Red Gradients -->
+    <linearGradient id="nssBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F3876" />
+      <stop offset="100%" stop-color="#1A56A8" />
     </linearGradient>
-    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="100%" stop-color="#EAF4FF" />
+    <linearGradient id="nssRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B71C1C" />
+      <stop offset="100%" stop-color="#D32F2F" />
     </linearGradient>
   </defs>
 
-  <!-- Background Circle with Safe Margin -->
-  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <!-- Background Base Container -->
+  <rect width="512" height="512" rx="128" fill="#F8FBFF" />
 
-  <!-- Outer Ring -->
-  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#ringGrad)" stroke-width="14" opacity="0.9" />
+  <!-- Outer Navy Blue Shield Ring -->
+  <circle cx="256" cy="256" r="236" fill="url(#nssBlue)" />
+  <circle cx="256" cy="256" r="224" fill="#ffffff" />
 
-  <!-- Inner Concentric Circle -->
-  <circle cx="256" cy="256" r="130" fill="#123B75" stroke="#ffffff" stroke-width="6" />
+  <!-- Crimson Red Border Ring of Official NSS Badge -->
+  <circle cx="256" cy="256" r="214" fill="url(#nssRed)" />
+  <circle cx="256" cy="256" r="172" fill="#ffffff" />
 
-  <!-- 8 Spokes representing NSS Konark Sun Wheel -->
+  <!-- Inner Navy Blue Chariot Wheel Hub Background -->
+  <circle cx="256" cy="256" r="162" fill="url(#nssBlue)" />
+
+  <!-- Konark Wheel Outer Rim -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#ffffff" stroke-width="6" />
+  <circle cx="256" cy="256" r="132" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="8 6" />
+
+  <!-- 8 Main Spokes of Konark Sun Temple Wheel -->
   <g stroke="#ffffff" stroke-width="8" stroke-linecap="round">
-    <line x1="256" y1="126" x2="256" y2="386" />
-    <line x1="126" y1="256" x2="386" y2="256" />
-    <line x1="164" y1="164" x2="348" y2="348" />
-    <line x1="164" y1="348" x2="348" y2="164" />
+    <!-- Vertical & Horizontal -->
+    <line x1="256" y1="106" x2="256" y2="406" />
+    <line x1="106" y1="256" x2="406" y2="256" />
+    <!-- Diagonals -->
+    <line x1="150" y1="150" x2="362" y2="362" />
+    <line x1="150" y1="362" x2="362" y2="150" />
   </g>
 
-  <!-- Central Hub -->
-  <circle cx="256" cy="256" r="42" fill="#1565C0" stroke="#ffffff" stroke-width="8" />
+  <!-- 8 Minor Spokes -->
+  <g stroke="#F8FBFF" stroke-width="4" stroke-linecap="round" opacity="0.85">
+    <line x1="256" y1="126" x2="256" y2="386" transform="rotate(22.5 256 256)" />
+    <line x1="256" y1="126" x2="256" y2="386" transform="rotate(67.5 256 256)" />
+    <line x1="256" y1="126" x2="256" y2="386" transform="rotate(112.5 256 256)" />
+    <line x1="256" y1="126" x2="256" y2="386" transform="rotate(157.5 256 256)" />
+  </g>
 
-  <!-- NSS Acronym Typography -->
-  <text x="256" y="266" text-anchor="middle" font-family="Inter, sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="1">NSS</text>
+  <!-- Circular Knobs / Medallions on 8 Primary Spokes -->
+  <g fill="#D32F2F" stroke="#ffffff" stroke-width="3">
+    <circle cx="256" cy="170" r="12" />
+    <circle cx="256" cy="342" r="12" />
+    <circle cx="170" cy="256" r="12" />
+    <circle cx="342" cy="256" r="12" />
+    <circle cx="195" cy="195" r="12" />
+    <circle cx="317" cy="317" r="12" />
+    <circle cx="195" cy="317" r="12" />
+    <circle cx="317" cy="195" r="12" />
+  </g>
+
+  <!-- Central Hub with Ring & Crimson Center -->
+  <circle cx="256" cy="256" r="54" fill="#ffffff" />
+  <circle cx="256" cy="256" r="44" fill="url(#nssRed)" stroke="#ffffff" stroke-width="4" />
+  <circle cx="256" cy="256" r="24" fill="url(#nssBlue)" stroke="#ffffff" stroke-width="3" />
+
+  <!-- Curved Banner Text on Red Ring: NOT ME BUT YOU -->
+  <path id="topCurve" d="M 90 256 A 166 166 0 0 1 422 256" fill="none" />
+  <text fill="#ffffff" font-family="'Inter', Arial, sans-serif" font-weight="900" font-size="26" letter-spacing="4">
+    <textPath href="#topCurve" startOffset="50%" text-anchor="middle">
+      NATIONAL SERVICE SCHEME
+    </textPath>
+  </text>
+
+  <path id="bottomCurve" d="M 422 256 A 166 166 0 0 1 90 256" fill="none" />
+  <text fill="#ffffff" font-family="'Inter', Arial, sans-serif" font-weight="800" font-size="22" letter-spacing="5">
+    <textPath href="#bottomCurve" startOffset="50%" text-anchor="middle">
+      NOT ME BUT YOU
+    </textPath>
+  </text>
 </svg>

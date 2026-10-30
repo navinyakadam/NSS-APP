@@ -15,7 +15,10 @@ import {
   CheckCircle2,
   Clock,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Eye,
+  EyeOff,
+  KeyRound
 } from 'lucide-react';
 
 interface ProfileSectionProps {
@@ -27,7 +30,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
   onOpenVolunteersModal,
   onNavigateTab,
 }) => {
-  const { currentUser, logout, updateProfile, activities } = useNSS();
+  const { currentUser, logout, updateProfile, activities, switchToPOWithPassword } = useNSS();
 
   const [activeTab, setActiveTab] = useState<'personal' | 'academic' | 'contact'>('personal');
   const [featureSearch, setFeatureSearch] = useState('');
@@ -37,6 +40,34 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
   const [editName, setEditName] = useState(currentUser?.fullName || '');
   const [editPhone, setEditPhone] = useState(currentUser?.phone || '');
   const [editStream, setEditStream] = useState(currentUser?.stream || '');
+
+  // PO Password Elevation states ($ynchr0N$$P04cc)
+  const [poPassword, setPoPassword] = useState('');
+  const [poPasswordError, setPoPasswordError] = useState<string | null>(null);
+  const [poSuccessMessage, setPoSuccessMessage] = useState<string | null>(null);
+  const [showPoPasswordField, setShowPoPasswordField] = useState(false);
+  const [showPasswordText, setShowPasswordText] = useState(false);
+  const [isSubmittingPO, setIsSubmittingPO] = useState(false);
+
+  const handleSwitchToPO = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPoPasswordError(null);
+    setPoSuccessMessage(null);
+    setIsSubmittingPO(true);
+
+    try {
+      const res = await switchToPOWithPassword(poPassword.trim());
+      if (res.success) {
+        setPoSuccessMessage('Successfully switched to Programme Officer (PO) account!');
+        setPoPassword('');
+        setShowPoPasswordField(false);
+      } else {
+        setPoPasswordError(res.error || 'Incorrect authorization password.');
+      }
+    } finally {
+      setIsSubmittingPO(false);
+    }
+  };
 
   // Feature locator quick results
   const appFeatures = [
@@ -402,6 +433,98 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
               <Lock className="w-3.5 h-3.5 text-slate-400" />
             )}
           </div>
+        </div>
+
+        {/* Switch to PO Account Feature with Development Authorization Password */}
+        <div className="mt-3 pt-3 border-t border-slate-100">
+          {poSuccessMessage && (
+            <div className="mb-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold">Access Granted!</p>
+                <p className="text-[11px] mt-0.5">{poSuccessMessage}</p>
+              </div>
+            </div>
+          )}
+
+          {currentUser?.role === 'po' ? (
+            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-rose-600" />
+                <span className="font-semibold">You have active PO rank authority</span>
+              </div>
+              <span className="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">Authorized</span>
+            </div>
+          ) : !showPoPasswordField ? (
+            <button
+              onClick={() => {
+                setShowPoPasswordField(true);
+                setPoPasswordError(null);
+              }}
+              className="w-full py-2.5 px-3.5 rounded-2xl bg-[#EAF4FF] hover:bg-blue-100 text-[#1565C0] text-xs font-bold border border-blue-200/80 transition flex items-center justify-between shadow-2xs cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-[#1565C0]" />
+                <span>Switch to PO Account (Enter Password)</span>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <form onSubmit={handleSwitchToPO} className="p-3.5 rounded-2xl bg-[#F8FBFF] border border-blue-200/80 space-y-2.5 animate-in fade-in duration-150">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#123B75] flex items-center gap-1.5">
+                  <KeyRound className="w-4 h-4 text-[#1565C0]" />
+                  Enter PO Authorization Password
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPoPasswordField(false);
+                    setPoPasswordError(null);
+                  }}
+                  className="text-[11px] text-slate-400 hover:text-slate-600"
+                >
+                  Cancel
+                </button>
+              </div>
+
+              <p className="text-[11px] text-slate-500 leading-snug">
+                Enter the secret developmental password to immediately promote your account to Programme Officer tier.
+              </p>
+
+              {poPasswordError && (
+                <div className="p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-medium">
+                  {poPasswordError}
+                </div>
+              )}
+
+              <div className="relative">
+                <input
+                  type={showPasswordText ? 'text' : 'password'}
+                  required
+                  value={poPassword}
+                  onChange={(e) => setPoPassword(e.target.value)}
+                  placeholder="Enter PO password"
+                  className="w-full pl-3 pr-9 py-2 rounded-xl bg-white border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-[#1565C0] outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordText(!showPasswordText)}
+                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                >
+                  {showPasswordText ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmittingPO}
+                className="w-full py-2.5 rounded-xl bg-[#1565C0] hover:bg-[#123B75] text-white text-xs font-bold transition shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                {isSubmittingPO ? 'Authorizing...' : 'Authorize & Switch to PO'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
 

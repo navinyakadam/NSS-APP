@@ -211,7 +211,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
 
   return (
     <div className="space-y-5 pb-24 px-4 max-w-md mx-auto pt-3">
-      {/* 1. Hero Greeting Banner (Matches Alegreya College Reference) */}
+      {/* 1. Hero Greeting Banner (Matches Ramnivas Ruia College Reference) */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#EAF4FF] via-[#F0F7FF] to-white border border-blue-100 p-5 shadow-xs">
         {/* Subtle college tower/dome vector illustration in background */}
         <div className="absolute right-0 bottom-0 opacity-15 pointer-events-none translate-x-4 translate-y-3">
@@ -420,7 +420,16 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
         </div>
 
         <div className="space-y-2.5">
-          {upcomingActivities.slice(0, 3).map((act) => {
+          {upcomingActivities.length === 0 ? (
+            <div className="py-6 text-center text-slate-400 text-xs bg-white rounded-2xl border border-dashed border-slate-200 p-5">
+              <CalendarIcon className="w-6 h-6 text-slate-300 mx-auto mb-1.5" />
+              <p className="font-semibold text-slate-600">No upcoming activities yet</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                {isCoreOrPo ? 'Use the "+ Create Activity" button above to publish your first drive.' : 'Activities scheduled by Core Team and PO will appear here.'}
+              </p>
+            </div>
+          ) : (
+            upcomingActivities.slice(0, 3).map((act) => {
             const isEnrolled = act.enrolledUserIds.includes(currentUser?.uid || '');
             const todayStr = new Date().toISOString().split('T')[0];
             const isPastDeadline = todayStr >= act.date;
@@ -497,7 +506,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
                 </div>
               </div>
             );
-          })}
+          }))}
         </div>
       </div>
 

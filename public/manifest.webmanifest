@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "NSS Volunteer Portal - Alegreya College",
-  "short_name": "NSS Portal",
-  "description": "Official Alegreya College NSS Volunteer Management App for activities, attendance, and coordination.",
+  "name": "SynchroNSS - Ramnivas Ruia College",
+  "short_name": "SynchroNSS",
+  "description": "SynchroNSS - Official volunteer and activity management system for National Service Scheme (NSS), Ramnivas Ruia College.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

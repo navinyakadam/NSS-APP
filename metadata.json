@@ -1,6 +1,6 @@
 {
-  "name": "GitHub Project Hub with Firebase",
-  "description": "A GitHub-ready project template integrated with Firebase Authentication and Firestore real-time data persistence.",
+  "name": "SynchroNSS - Ramnivas Ruia College",
+  "description": "SynchroNSS - Official volunteer and activity management system for National Service Scheme (NSS), Ramnivas Ruia College.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

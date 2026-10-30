@@ -119,11 +119,12 @@ export const AuthModal: React.FC = () => {
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-blue-100 overflow-hidden my-auto animate-in zoom-in-95 duration-200">
         {/* Modal Top Header */}
         <div className="bg-gradient-to-r from-[#123B75] to-[#1565C0] p-6 text-white text-center relative">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20">
-            <Shield className="w-6 h-6 text-white" />
+          <div className="w-14 h-14 mx-auto rounded-full bg-white p-1 flex items-center justify-center mb-3 shadow-md">
+            <img src="/nss-logo.png" alt="NSS Logo" className="w-full h-full object-contain rounded-full" />
           </div>
-          <h2 className="font-heading text-2xl font-bold tracking-tight">Alegreya College NSS</h2>
-          <p className="text-blue-100 text-xs italic mt-0.5">Not me, but you • Volunteer Portal</p>
+          <h2 className="font-heading text-2xl font-bold tracking-tight">SynchroNSS</h2>
+          <p className="text-blue-100 text-xs font-medium mt-0.5">Ramnivas Ruia College NSS Unit</p>
+          <p className="text-blue-200 text-[11px] italic">Not me, but you • Volunteer Portal</p>
 
           {/* Toggle between Login and Sign Up */}
           <div className="flex bg-white/15 p-1 rounded-xl mt-4 border border-white/20 max-w-xs mx-auto">
@@ -265,33 +266,6 @@ export const AuthModal: React.FC = () => {
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              {/* Fast Demo One-Click Fill */}
-              <div className="pt-3 border-t border-slate-100 text-center">
-                <span className="text-[11px] text-slate-400 block mb-2">Or instant one-click demo login:</span>
-                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                  <button
-                    type="button"
-                    onClick={() => switchUserForDemo('user_aarav_017')}
-                    className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold"
-                  >
-                    Volunteer (Aarav)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => switchUserForDemo('user_riya_033')}
-                    className="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold"
-                  >
-                    Core Team (Riya)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => switchUserForDemo('user_po_vedant_001')}
-                    className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold"
-                  >
-                    PO (Prof. Vedant)
-                  </button>
-                </div>
-              </div>
             </form>
           )}
 

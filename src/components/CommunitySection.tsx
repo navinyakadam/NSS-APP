@@ -15,7 +15,8 @@ import {
   Users,
   Download,
   Shield,
-  CheckCheck
+  CheckCheck,
+  MessageSquare
 } from 'lucide-react';
 
 export const CommunitySection: React.FC = () => {
@@ -259,7 +260,16 @@ export const CommunitySection: React.FC = () => {
 
       {/* Chats List */}
       <div className="space-y-2">
-        {filteredChats.map((chat) => (
+        {filteredChats.length === 0 ? (
+          <div className="p-8 bg-white rounded-2xl border border-dashed border-slate-200 text-center text-xs text-slate-400 space-y-1">
+            <MessageSquare className="w-7 h-7 text-slate-300 mx-auto mb-1" />
+            <p className="font-semibold text-slate-600">No active chats yet</p>
+            <p className="text-[11px] text-slate-400">
+              Activity group chats are generated automatically 2 days before each scheduled event for enrolled volunteers.
+            </p>
+          </div>
+        ) : (
+          filteredChats.map((chat) => (
           <div
             key={chat.id}
             onClick={() => setActiveChatId(chat.id)}
@@ -296,7 +306,7 @@ export const CommunitySection: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        )))}
       </div>
     </div>
   );

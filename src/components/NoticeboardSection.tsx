@@ -9,7 +9,10 @@ import {
   Archive,
   Calendar,
   Check,
+  CheckCircle,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Sparkles
 } from 'lucide-react';
 
@@ -23,6 +26,7 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewTab, setViewTab] = useState<'upcoming' | 'archive'>('upcoming');
+  const [showAllPast, setShowAllPast] = useState(false);
 
   const categories = [
     'All',
@@ -40,7 +44,7 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
   // Filter activities based on tab, search, category
   const filteredActivities = activities
     .filter((act) => {
-      // Tab filter
+      // Tab filter: Active includes upcoming + recently completed (<= 3 days); Archive includes archived (> 3 days)
       if (viewTab === 'upcoming' && act.status === 'archived') return false;
       if (viewTab === 'archive' && act.status !== 'archived') return false;
 
@@ -62,6 +66,12 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
       return true;
     })
     .sort((a, b) => (viewTab === 'upcoming' ? (a.date > b.date ? 1 : -1) : (b.date > a.date ? 1 : -1)));
+
+  // In past activities archive, preview first 4 unless user toggles showAllPast
+  const displayedActivities =
+    viewTab === 'archive' && !showAllPast
+      ? filteredActivities.slice(0, 4)
+      : filteredActivities;
 
   const getMonthAbbr = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -141,7 +151,10 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
       {/* 4. Tab Selector: Active Noticeboard vs Archived Activities */}
       <div className="flex p-1 bg-slate-100 rounded-xl text-xs font-semibold">
         <button
-          onClick={() => setViewTab('upcoming')}
+          onClick={() => {
+            setViewTab('upcoming');
+            setShowAllPast(false);
+          }}
           className={`flex-1 py-1.5 rounded-lg transition ${
             viewTab === 'upcoming'
               ? 'bg-white text-[#123B75] shadow-xs'
@@ -151,7 +164,9 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
           Active Noticeboard
         </button>
         <button
-          onClick={() => setViewTab('archive')}
+          onClick={() => {
+            setViewTab('archive');
+          }}
           className={`flex-1 py-1.5 rounded-lg transition flex items-center justify-center gap-1 ${
             viewTab === 'archive'
               ? 'bg-white text-[#123B75] shadow-xs'
@@ -159,7 +174,7 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
           }`}
         >
           <Archive className="w-3.5 h-3.5" />
-          Archive (Past 3 Days)
+          Archive (Past Activities)
         </button>
       </div>
 
@@ -167,9 +182,13 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
       <div className="space-y-3 pt-1">
         <div className="flex items-center justify-between text-xs text-slate-500">
           <span className="font-semibold text-slate-800">
-            {viewTab === 'upcoming' ? 'Scheduled Activities' : 'Archived Activities Archive'}
+            {viewTab === 'upcoming' ? 'Scheduled & Active Activities' : 'Completed Past Activities Archive'}
           </span>
-          <span>{filteredActivities.length} found</span>
+          <span>
+            {viewTab === 'archive' && !showAllPast && filteredActivities.length > 4
+              ? `Showing 4 of ${filteredActivities.length}`
+              : `${filteredActivities.length} found`}
+          </span>
         </div>
 
         {filteredActivities.length === 0 ? (
@@ -179,10 +198,11 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
             <p className="text-[11px] text-slate-400 mt-0.5">Try adjusting your filters or category choice.</p>
           </div>
         ) : (
-          filteredActivities.map((act) => {
+          displayedActivities.map((act) => {
             const isEnrolled = act.enrolledUserIds.includes(currentUser?.uid || '');
             const todayStr = new Date().toISOString().split('T')[0];
             const isPastDeadline = todayStr >= act.date;
+            const isCompleted = act.status === 'completed';
 
             return (
               <div
@@ -214,6 +234,12 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
                       <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-800 font-semibold">
                         {act.category}
                       </span>
+                      {isCompleted && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold flex items-center gap-0.5">
+                          <CheckCircle className="w-2.5 h-2.5" />
+                          Completed
+                        </span>
+                      )}
                       {act.status === 'archived' && (
                         <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
                           Archived
@@ -242,7 +268,12 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
                   </div>
 
                   {viewTab === 'upcoming' ? (
-                    isEnrolled ? (
+                    isCompleted ? (
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        {isEnrolled ? 'Attended' : 'Completed (Concluded)'}
+                      </span>
+                    ) : isEnrolled ? (
                       <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 flex items-center gap-1">
                         <Check className="w-3 h-3" />
                         Registered
@@ -261,13 +292,35 @@ export const NoticeboardSection: React.FC<NoticeboardSectionProps> = ({ onSelect
                     )
                   ) : (
                     <span className="text-[#1565C0] font-semibold flex items-center gap-0.5 text-xs">
-                      View report <ChevronRight className="w-3.5 h-3.5" />
+                      View details <ChevronRight className="w-3.5 h-3.5" />
                     </span>
                   )}
                 </div>
               </div>
             );
           })
+        )}
+
+        {/* View All Past Activities toggle button if past activities count > 4 */}
+        {viewTab === 'archive' && filteredActivities.length > 4 && (
+          <div className="pt-2">
+            <button
+              onClick={() => setShowAllPast((prev) => !prev)}
+              className="w-full py-2.5 rounded-xl bg-[#EAF4FF] hover:bg-blue-100 text-[#1565C0] font-bold text-xs border border-blue-200/80 transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+            >
+              {showAllPast ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Show Recent 4 Only
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  View All Past Activities ({filteredActivities.length - 4} more)
+                </>
+              )}
+            </button>
+          </div>
         )}
       </div>
     </div>

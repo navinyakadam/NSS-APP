@@ -62,19 +62,35 @@ interface NSSContextType {
   addPollComment: (pollId: string, text: string) => Promise<void>;
   // Chats
   sendMessage: (chatId: string, text: string, attachment?: { name: string; size: string; type: 'doc' | 'image' }) => Promise<void>;
+  // Dev promotion to PO
+  switchToPOWithPassword: (password: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 const NSSContext = createContext<NSSContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_USER_KEY = 'nss_logged_in_user_id';
-const LOCAL_STORAGE_USERS_KEY = 'nss_users_state';
-const LOCAL_STORAGE_ACTIVITIES_KEY = 'nss_activities_state';
-const LOCAL_STORAGE_FEEDBACKS_KEY = 'nss_feedbacks_state';
-const LOCAL_STORAGE_POLLS_KEY = 'nss_polls_state';
-const LOCAL_STORAGE_CHATS_KEY = 'nss_chats_state';
+const LOCAL_STORAGE_USER_KEY = 'synchronss_user_prod';
+const LOCAL_STORAGE_USERS_KEY = 'synchronss_users_prod';
+const LOCAL_STORAGE_ACTIVITIES_KEY = 'synchronss_activities_prod';
+const LOCAL_STORAGE_FEEDBACKS_KEY = 'synchronss_feedbacks_prod';
+const LOCAL_STORAGE_POLLS_KEY = 'synchronss_polls_prod';
+const LOCAL_STORAGE_CHATS_KEY = 'synchronss_chats_prod';
 
 export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // State initialized with seed fallback
+  // Clear any legacy mock data from local storage
+  useEffect(() => {
+    try {
+      localStorage.removeItem('nss_logged_in_user_id');
+      localStorage.removeItem('nss_users_state');
+      localStorage.removeItem('nss_activities_state');
+      localStorage.removeItem('nss_feedbacks_state');
+      localStorage.removeItem('nss_polls_state');
+      localStorage.removeItem('nss_chats_state');
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // State initialized with clean storage or empty arrays
   const [users, setUsers] = useState<NSSUser[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_USERS_KEY);
     return saved ? JSON.parse(saved) : INITIAL_USERS;
@@ -109,8 +125,7 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const found = users.find((u) => u.uid === savedId);
       if (found) return found;
     }
-    // Default to Aarav (Volunteer) for realistic first demo load
-    return users[0] || null;
+    return null;
   });
 
   // Save changes to localStorage for offline / persistence stability
@@ -146,29 +161,16 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     // 1. Listen for activities
     const unsubActivities = onSnapshot(collection(db, 'nss_activities'), (snap) => {
-      if (!snap.empty) {
-        const remoteActivities: Activity[] = [];
-        snap.forEach((d) => remoteActivities.push(d.data() as Activity));
-        setActivities(remoteActivities);
-      } else {
-        // Seed remote with initial activities
-        INITIAL_ACTIVITIES.forEach((act) => {
-          setDoc(doc(db, 'nss_activities', act.id), act).catch(() => {});
-        });
-      }
+      const remoteActivities: Activity[] = [];
+      snap.forEach((d) => remoteActivities.push(d.data() as Activity));
+      setActivities(remoteActivities);
     }, () => {});
 
     // 2. Listen for users
     const unsubUsers = onSnapshot(collection(db, 'nss_users'), (snap) => {
-      if (!snap.empty) {
-        const remoteUsers: NSSUser[] = [];
-        snap.forEach((d) => remoteUsers.push(d.data() as NSSUser));
-        setUsers(remoteUsers);
-      } else {
-        INITIAL_USERS.forEach((u) => {
-          setDoc(doc(db, 'nss_users', u.uid), u).catch(() => {});
-        });
-      }
+      const remoteUsers: NSSUser[] = [];
+      snap.forEach((d) => remoteUsers.push(d.data() as NSSUser));
+      setUsers(remoteUsers);
     }, () => {});
 
     // 3. Listen for feedbacks
@@ -234,7 +236,7 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               {
                 id: `sys_${Date.now()}`,
                 senderId: 'system',
-                senderName: 'NSS Alegreya Notice',
+                senderName: 'Ramnivas Ruia College NSS Notice',
                 senderRole: 'po',
                 text: `Welcome volunteers! This group chat has been automatically generated 2 days prior to ${act.title}. Use this for official reporting and duty coordination.`,
                 timestamp: 'System'
@@ -246,10 +248,15 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         });
       }
 
-      // Automated Archive: 3 days after completion
+      // Mark concluded activities as completed (active in noticeboard for up to 3 days after completion)
+      if (diffDays <= 0 && diffDays >= -3 && act.status === 'upcoming') {
+        updateActivity(act.id, { status: 'completed' });
+      }
+
+      // Automated Archive: shifted to archive after 3 days of completion
       if (diffDays < -3 && act.status !== 'archived') {
         updateActivity(act.id, { status: 'archived' });
-        // Delete corresponding activity chat
+        // Delete corresponding activity chat simultaneously when archived
         setChats((prev) => prev.filter((c) => c.activityId !== act.id));
       }
     });
@@ -360,6 +367,21 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const switchUserForDemo = (userId: string) => {
     const found = users.find((u) => u.uid === userId);
     if (found) setCurrentUser(found);
+  };
+
+  // Switch to PO account with developmental authorization password ($ynchr0N$$P04cc)
+  const switchToPOWithPassword = async (pass: string): Promise<{ success: boolean; error?: string }> => {
+    if (pass !== '$ynchr0N$$P04cc') {
+      return { success: false, error: 'Incorrect authorization password. Access to PO rank denied.' };
+    }
+    if (!currentUser) {
+      return { success: false, error: 'No user is currently logged in.' };
+    }
+    const updated = { ...currentUser, role: 'po' as UserRole };
+    setCurrentUser(updated);
+    setUsers((prev) => prev.map((u) => (u.uid === currentUser.uid ? updated : u)));
+    setDoc(doc(db, 'nss_users', currentUser.uid), { role: 'po' }, { merge: true }).catch(console.warn);
+    return { success: true };
   };
 
   // Activity Management
@@ -737,6 +759,7 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         voteInPoll,
         addPollComment,
         sendMessage,
+        switchToPOWithPassword,
       }}
     >
       {children}

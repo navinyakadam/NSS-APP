@@ -34,9 +34,9 @@ export default defineConfig(() => {
         includeAssets: ['apple-touch-icon.png', 'icon.svg', 'manifest.json', 'manifest.webmanifest'],
         manifest: {
           id: '/',
-          name: 'NSS Volunteer Portal - Alegreya College',
-          short_name: 'NSS Portal',
-          description: 'Official Alegreya College NSS Volunteer Management App for activities, attendance, and coordination.',
+          name: 'SynchroNSS - Ramnivas Ruia College',
+          short_name: 'SynchroNSS',
+          description: 'SynchroNSS - Official volunteer and activity management system for National Service Scheme (NSS), Ramnivas Ruia College.',
           theme_color: '#1565C0',
           background_color: '#F8FBFF',
           display: 'standalone',
