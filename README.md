@@ -1,11 +1,15 @@
 # SynchroNSS — Volunteer & Activity Management Platform
 ### Ramnivas Ruia Autonomous College NSS Unit
 
-> **Project Note**: The core concept, feature specifications, user interface design, and bug decoding were entirely conceived and directed by the SynchroNSS team. AI engineering tools were utilized as a development partner to translate these specifications and designs into code, serving as a practical method to master modern AI-assisted development workflows. The platform is currently in its final prototype stage and is being prepared for an official presentation to college faculty, with an upcoming deployment scheduled for 100+ active volunteers across both FYJC and SYJC.
+> **Project Note**: The core concept, feature specifications, user interface design, and bug decoding were entirely conceived and directed by the SynchroNSS team:
+> * **Lead Developer**: Navinya Kadam (System architecture, technical specifications, workflow logic, and bug resolution)
+> * **Lead Designer**: Kanak Mhapuskar (Product design, user experience workflows, interface layouts, and visual system)
+> 
+> AI engineering tools were utilized as an implementation accelerator to translate these defined specifications, workflows, and visual designs into code, serving as a practical method to master modern AI-assisted software development. The platform is currently in its final prototype stage and is being prepared for an official presentation to college faculty, with an upcoming deployment scheduled for 100+ active volunteers across both FYJC and SYJC.
 
 SynchroNSS is a web and Android platform engineered to modernize volunteer administration and service-hour tracking for collegiate National Service Scheme (NSS) units.
 
-Volunteers frequently struggle with scattered notices, time lost sifting through disorganized chat groups, and friction in peer coordination. SynchroNSS solves this by serving as a centralized, all-in-one portal for all volunteering workflows—streamlining communications, removing logistical bottlenecks, and simplifying administrative overhead across student coordination cycles.
+Volunteers frequently struggle with scattered notices, time lost sifting through disorganized chat groups, and friction in peer coordination. SynchroNSS is designed to solve this by serving as a centralized, all-in-one portal for all volunteering workflows—streamlining communications, removing logistical bottlenecks, and simplifying administrative overhead across student coordination cycles.
 
 **Live Web Application**: [https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app)
 
@@ -29,37 +33,37 @@ For developers and technical evaluators exploring the live application:
 
 ---
 
-## Volunteer Impact: SynchroNSS vs. Traditional Channels
+## Problem and Intended Solution: SynchroNSS vs. Traditional Channels
 
-Traditional collegiate volunteering relies heavily on ad-hoc WhatsApp groups, Google Forms, and physical paper logbooks. This approach introduces operational friction: essential notices get lost in chatter, attendance records disappear, and volunteers spend excessive time navigating disorganized tools. SynchroNSS addresses these issues through purpose-built tools:
+Traditional collegiate volunteering relies heavily on ad-hoc WhatsApp groups, Google Forms, and physical paper logbooks. This approach introduces operational friction: essential notices get lost in chatter, attendance records disappear, and volunteers spend excessive time navigating disorganized tools. SynchroNSS is designed to address these issues through purpose-built tools:
 
 * **Activity Noticeboard vs. WhatsApp Broadcasts**
   * *Traditional Method*: Important notices and registration links get buried beneath casual conversation in 200+ member WhatsApp groups, resulting in missed deadlines and duplicate queries.
-  * *SynchroNSS Impact*: A dedicated bulletin displays upcoming service drives with real-time capacity counters, prerequisites, and automated registration deadlines. Volunteers see open spots and sign up in one click without noise.
+  * *Intended Solution*: Designed as a dedicated bulletin displaying upcoming service drives with real-time capacity counters, prerequisites, and automated registration deadlines, allowing volunteers to view open spots and sign up in one click without noise.
 
 * **Ephemeral Event Coordination vs. Permanent Chat Clutter**
   * *Traditional Method*: Coordinators create temporary WhatsApp groups for every drive, flooding volunteers' personal messaging apps with obsolete groups long after the event ends.
-  * *SynchroNSS Impact*: Context-specific event chat rooms activate 48 hours prior to an activity and close automatically after completion, confining operational chatter to active participants while keeping personal inboxes clean.
+  * *Intended Solution*: Engineered to automatically activate context-specific event chat rooms 48 hours prior to an activity and close them post-completion, confining operational chatter to active participants while keeping personal inboxes clean.
 
 * **Digital Attendance Ledger vs. Physical Paper Sign-In Sheets**
   * *Traditional Method*: Paper attendance sheets often get damaged or misplaced during field drives, requiring weeks of manual data entry into spreadsheets. Students remain uncertain whether they have completed their required NSS service hours.
-  * *SynchroNSS Impact*: Programme Officers verify attendance digitally on-site, immediately updating the student's personal profile with verified hours (e.g., 6 hours per drive) toward their final college certification.
+  * *Intended Solution*: Designed for Programme Officers to verify attendance digitally on-site, immediately updating the student's personal profile with verified hours (e.g., 6 hours per drive) toward their final college certification.
 
 * **Service Schedule vs. Scattered Text Reminders**
   * *Traditional Method*: Volunteers rely on pinned messages and personal notes, frequently leading to reporting delays or clashes with lectures, practicals, and examinations.
-  * *SynchroNSS Impact*: A consolidated personal calendar visualizes all confirmed service commitments, reporting venues, and duty timings, allowing students to balance community service with academic schedules.
+  * *Intended Solution*: Structured as a consolidated personal calendar visualising confirmed service commitments, reporting venues, and duty timings, allowing students to balance community service with academic schedules.
 
 * **Curated Activity Media vs. WhatsApp Photo Dumps**
   * *Traditional Method*: Field photos are dumped into group chats (consuming device storage and compressing quality) or scattered across unorganized drive links without contributor attribution.
-  * *SynchroNSS Impact*: A shared gallery capped at 50 photos per activity lets volunteers submit documentation directly, attributing each upload to the student's name, stream, and division for official college reports.
+  * *Intended Solution*: Implemented as a shared gallery capped at 50 photos per activity, letting volunteers submit documentation directly while automatically attributing each upload to the student's name, stream, and division for official college reports.
 
 * **Structured Polling & Faculty Queries vs. Unstructured Chats**
   * *Traditional Method*: Feedback is gathered through casual chat polls that quickly get derailed, while hesitant volunteers avoid messaging faculty on personal phone numbers with questions or concerns.
-  * *SynchroNSS Impact*: Formalized single-choice polls streamline collective decision-making, and a private messaging desk connects volunteers directly to Programme Officers without sharing personal contact numbers.
+  * *Intended Solution*: Designed with formalized single-choice polls to streamline collective decision-making, coupled with a private messaging desk connecting volunteers directly to Programme Officers without sharing personal contact numbers.
 
 * **Academic Master Directory vs. Unindexed Phone Contacts**
   * *Traditional Method*: Volunteer contacts remain unsaved or disorganized, causing delays when forming division-specific task forces or handling field emergencies.
-  * *SynchroNSS Impact*: Direct integration with the college roster (categorized across FYJC/SYJC Science and Arts divisions) enables instant peer identification and role assignment.
+  * *Intended Solution*: Directly integrated with the college roster (categorized across FYJC/SYJC Science and Arts divisions) to facilitate instant peer identification and role assignment.
 
 ---
 
