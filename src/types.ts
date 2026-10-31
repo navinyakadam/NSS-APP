@@ -1,5 +1,16 @@
 export type UserRole = 'volunteer' | 'core' | 'po';
 
+export type Grade = 'FYJC' | 'SYJC';
+export type Stream = 'Science' | 'Arts';
+export type ArtsDivision = 'A' | 'B' | 'C' | 'D';
+export type ScienceDivision = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+export type Division = ArtsDivision | ScienceDivision;
+
+export const VALID_GRADES: Grade[] = ['FYJC', 'SYJC'];
+export const VALID_STREAMS: Stream[] = ['Science', 'Arts'];
+export const ARTS_DIVISIONS: ArtsDivision[] = ['A', 'B', 'C', 'D'];
+export const SCIENCE_DIVISIONS: ScienceDivision[] = ['A', 'B', 'C', 'D', 'E', 'F'];
+
 export interface NSSUser {
   uid: string;
   volunteerId: string;
@@ -7,8 +18,8 @@ export interface NSSUser {
   password?: string;
   fullName: string;
   phone: string;
-  grade: string;
-  stream: string;
+  grade: Grade | string;
+  stream: Stream | string;
   division: string;
   rollNumber: string;
   role: UserRole;
@@ -19,6 +30,19 @@ export interface NSSUser {
   hoursContributed: number;
   avatarUrl?: string;
   createdAt: string;
+}
+
+export interface ActivityMediaItem {
+  id: string;
+  url: string;
+  caption?: string;
+  uploadedBy: string; // userId
+  uploaderName: string;
+  uploaderRole?: UserRole;
+  uploaderGrade?: string;
+  uploaderStream?: string;
+  uploaderDivision?: string;
+  uploadedAt: string;
 }
 
 export interface Activity {
@@ -35,6 +59,7 @@ export interface Activity {
   tags: string[];
   posterUrl: string;
   mediaUrls: string[];
+  mediaItems?: ActivityMediaItem[];
   selectedHighlights?: string[];
   capacity: number;
   registeredCount: number;

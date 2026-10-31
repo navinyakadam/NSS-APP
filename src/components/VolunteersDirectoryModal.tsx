@@ -25,10 +25,14 @@ export const VolunteersDirectoryModal: React.FC<VolunteersDirectoryModalProps> =
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'volunteer' | 'core' | 'po'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'Active' | 'Inactive'>('all');
+  const [streamFilter, setStreamFilter] = useState<'all' | 'Science' | 'Arts'>('all');
+  const [gradeFilter, setGradeFilter] = useState<'all' | 'FYJC' | 'SYJC'>('all');
 
   const filteredUsers = users.filter((u) => {
     if (roleFilter !== 'all' && u.role !== roleFilter) return false;
     if (statusFilter !== 'all' && u.status !== statusFilter) return false;
+    if (streamFilter !== 'all' && u.stream !== streamFilter) return false;
+    if (gradeFilter !== 'all' && u.grade !== gradeFilter) return false;
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -36,8 +40,10 @@ export const VolunteersDirectoryModal: React.FC<VolunteersDirectoryModalProps> =
       const matchId = u.volunteerId.toLowerCase().includes(q);
       const matchEmail = u.email.toLowerCase().includes(q);
       const matchPhone = u.phone.includes(q);
-      const matchStream = u.stream.toLowerCase().includes(q);
-      if (!matchName && !matchId && !matchEmail && !matchPhone && !matchStream) return false;
+      const matchStream = (u.stream || '').toLowerCase().includes(q);
+      const matchGrade = (u.grade || '').toLowerCase().includes(q);
+      const matchDiv = `div ${u.division}`.toLowerCase().includes(q) || (u.division || '').toLowerCase() === q;
+      if (!matchName && !matchId && !matchEmail && !matchPhone && !matchStream && !matchGrade && !matchDiv) return false;
     }
     return true;
   });
@@ -57,7 +63,7 @@ export const VolunteersDirectoryModal: React.FC<VolunteersDirectoryModalProps> =
                 Volunteers Master Directory
               </h2>
               <p className="text-blue-100 text-[11px]">
-                Programme Officer Authority • Manage Access & Contributions
+                Ramnivas Ruia College NSS • FYJC / SYJC Volunteer Rosters
               </p>
             </div>
           </div>
@@ -77,25 +83,44 @@ export const VolunteersDirectoryModal: React.FC<VolunteersDirectoryModalProps> =
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name, email, phone or NSS ID..."
+              placeholder="Search by name, ID, class, stream, or division..."
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-slate-200 text-xs focus:ring-1 focus:ring-[#1565C0] outline-none"
             />
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            {/* Role Filter Pills */}
-            <div className="flex gap-1">
-              {(['all', 'volunteer', 'core', 'po'] as const).map((r) => (
+            {/* Stream Filter Pills */}
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Stream:</span>
+              {(['all', 'Science', 'Arts'] as const).map((s) => (
                 <button
-                  key={r}
-                  onClick={() => setRoleFilter(r)}
-                  className={`px-2.5 py-1 rounded-lg font-semibold uppercase text-[10px] tracking-wider transition ${
-                    roleFilter === r
+                  key={s}
+                  onClick={() => setStreamFilter(s)}
+                  className={`px-2 py-0.5 rounded-lg font-semibold text-[10px] transition ${
+                    streamFilter === s
                       ? 'bg-[#1565C0] text-white shadow-2xs'
                       : 'bg-white border text-slate-600 hover:bg-slate-50'
                   }`}
                 >
-                  {r === 'all' ? `All (${users.length})` : r}
+                  {s === 'all' ? 'All' : s}
+                </button>
+              ))}
+            </div>
+
+            {/* Grade Filter Pills */}
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Class:</span>
+              {(['all', 'FYJC', 'SYJC'] as const).map((g) => (
+                <button
+                  key={g}
+                  onClick={() => setGradeFilter(g)}
+                  className={`px-2 py-0.5 rounded-lg font-semibold text-[10px] transition ${
+                    gradeFilter === g
+                      ? 'bg-[#123B75] text-white shadow-2xs'
+                      : 'bg-white border text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {g === 'all' ? 'All' : g}
                 </button>
               ))}
             </div>

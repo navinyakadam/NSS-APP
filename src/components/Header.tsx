@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNSS } from '../context/NSSContext.tsx';
-import { Bell, Menu, Shield, Users, UserCheck, X, LogOut } from 'lucide-react';
+import { Bell, Menu, Shield, Users, UserCheck, X, LogOut, Sparkles, RotateCcw } from 'lucide-react';
 
 interface HeaderProps {
   onOpenCreateModal?: () => void;
@@ -8,7 +8,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
-  const { currentUser, switchUserForDemo, users, logout } = useNSS();
+  const { currentUser, switchUserForDemo, users, logout, resetToDemoData } = useNSS();
   const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -105,10 +105,13 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
                   Active Account & Role
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#EAF4FF] border border-blue-200/80 mb-3">
+                <div className="p-2.5 rounded-xl bg-[#EAF4FF] border border-blue-200/80 mb-2.5">
                   <div className="font-bold text-sm text-[#123B75]">{currentUser?.fullName}</div>
-                  <div className="text-xs text-slate-600">{currentUser?.volunteerId}</div>
-                  <div className="mt-1 flex items-center gap-1">
+                  <div className="text-xs text-slate-600 font-mono">{currentUser?.volunteerId}</div>
+                  <div className="text-[11px] text-slate-500 mt-0.5">
+                    {currentUser?.grade} {currentUser?.stream} • Div {currentUser?.division}
+                  </div>
+                  <div className="mt-1.5 flex items-center gap-1">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                       currentUser?.role === 'po'
                         ? 'bg-rose-100 text-rose-700'
@@ -118,6 +121,54 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
                     }`}>
                       {currentUser?.role === 'po' ? 'PO (Highest Tier)' : currentUser?.role === 'core' ? 'Core Team' : 'Volunteer'}
                     </span>
+                  </div>
+                </div>
+
+                {/* Instant Persona Switcher for Web Demo */}
+                <div className="mb-2.5 space-y-1">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 px-1">
+                    <Sparkles className="w-3 h-3 text-amber-500" /> Web Demo Personas:
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      onClick={() => {
+                        switchUserForDemo('user_aarav_001');
+                        setShowRoleSwitcher(false);
+                      }}
+                      className={`p-1.5 rounded-lg text-center text-[10px] font-bold transition cursor-pointer ${
+                        currentUser?.uid === 'user_aarav_001'
+                          ? 'bg-[#1565C0] text-white shadow-2xs'
+                          : 'bg-slate-50 hover:bg-blue-50 text-slate-700'
+                      }`}
+                    >
+                      Aarav (Vol)
+                    </button>
+                    <button
+                      onClick={() => {
+                        switchUserForDemo('user_riya_002');
+                        setShowRoleSwitcher(false);
+                      }}
+                      className={`p-1.5 rounded-lg text-center text-[10px] font-bold transition cursor-pointer ${
+                        currentUser?.uid === 'user_riya_002'
+                          ? 'bg-amber-600 text-white shadow-2xs'
+                          : 'bg-slate-50 hover:bg-amber-50 text-slate-700'
+                      }`}
+                    >
+                      Riya (Core)
+                    </button>
+                    <button
+                      onClick={() => {
+                        switchUserForDemo('user_po_vedant_003');
+                        setShowRoleSwitcher(false);
+                      }}
+                      className={`p-1.5 rounded-lg text-center text-[10px] font-bold transition cursor-pointer ${
+                        currentUser?.uid === 'user_po_vedant_003'
+                          ? 'bg-rose-600 text-white shadow-2xs'
+                          : 'bg-slate-50 hover:bg-rose-50 text-slate-700'
+                      }`}
+                    >
+                      PO Sawant
+                    </button>
                   </div>
                 </div>
 
@@ -199,8 +250,18 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateTab }) => {
                 <p className="text-blue-600 font-mono text-[11px] mt-0.5">{currentUser?.volunteerId}</p>
               </div>
               <button
+                onClick={() => {
+                  resetToDemoData();
+                  setShowMenu(false);
+                }}
+                className="w-full py-2.5 px-3 mb-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#1565C0] font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reload Ruia Demo Suite
+              </button>
+              <button
                 onClick={() => { logout(); setShowMenu(false); }}
-                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 font-semibold text-slate-700 text-xs transition"
+                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 font-semibold text-slate-700 text-xs transition cursor-pointer"
               >
                 Log Out
               </button>

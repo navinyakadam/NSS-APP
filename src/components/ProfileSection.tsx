@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNSS } from '../context/NSSContext.tsx';
 import {
   Mail,
@@ -39,7 +39,32 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
   // Edit states
   const [editName, setEditName] = useState(currentUser?.fullName || '');
   const [editPhone, setEditPhone] = useState(currentUser?.phone || '');
-  const [editStream, setEditStream] = useState(currentUser?.stream || '');
+  const [editGrade, setEditGrade] = useState<'FYJC' | 'SYJC'>((currentUser?.grade as 'FYJC' | 'SYJC') || 'FYJC');
+  const [editStream, setEditStream] = useState<'Science' | 'Arts'>(currentUser?.stream === 'Arts' ? 'Arts' : 'Science');
+  const [editDivision, setEditDivision] = useState(currentUser?.division || 'A');
+  const [editRollNumber, setEditRollNumber] = useState(currentUser?.rollNumber || '');
+
+  useEffect(() => {
+    if (currentUser) {
+      setEditName(currentUser.fullName || '');
+      setEditPhone(currentUser.phone || '');
+      setEditGrade((currentUser.grade as 'FYJC' | 'SYJC') || 'FYJC');
+      setEditStream(currentUser.stream === 'Arts' ? 'Arts' : 'Science');
+      setEditDivision(currentUser.division || 'A');
+      setEditRollNumber(currentUser.rollNumber || '');
+    }
+  }, [currentUser, isEditing]);
+
+  const handleEditStreamChange = (newStream: 'Science' | 'Arts') => {
+    setEditStream(newStream);
+    if (newStream === 'Arts' && !['A', 'B', 'C', 'D'].includes(editDivision)) {
+      setEditDivision('A');
+    }
+  };
+
+  const editAvailableDivisions = editStream === 'Arts'
+    ? ['A', 'B', 'C', 'D']
+    : ['A', 'B', 'C', 'D', 'E', 'F'];
 
   // PO Password Elevation states ($ynchr0N$$P04cc)
   const [poPassword, setPoPassword] = useState('');
@@ -91,7 +116,10 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
     await updateProfile({
       fullName: editName.trim(),
       phone: editPhone.trim(),
-      stream: editStream.trim(),
+      grade: editGrade,
+      stream: editStream,
+      division: editDivision,
+      rollNumber: editRollNumber.trim(),
     });
     setIsEditing(false);
   };
@@ -141,7 +169,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-slate-500 truncate mt-1">
-              {currentUser?.grade} {currentUser?.stream}
+              {currentUser?.grade} {currentUser?.stream} • Div {currentUser?.division} (Roll {currentUser?.rollNumber})
             </p>
           </div>
 
@@ -157,14 +185,14 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
         {/* Edit Modal/Drawer if open */}
         {isEditing && (
           <form onSubmit={handleSaveProfile} className="mt-4 pt-4 border-t border-slate-100 space-y-3 text-xs">
-            <h3 className="font-bold text-slate-800">Edit Personal Information</h3>
+            <h3 className="font-bold text-slate-800">Edit Personal & Academic Details</h3>
             <div>
               <label className="block text-slate-600 font-semibold mb-1">Full Name</label>
               <input
                 type="text"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs outline-none"
+                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-1 focus:ring-[#1565C0]"
               />
             </div>
             <div>
@@ -173,29 +201,75 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
                 type="tel"
                 value={editPhone}
                 onChange={(e) => setEditPhone(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs outline-none"
+                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-1 focus:ring-[#1565C0]"
               />
             </div>
-            <div>
-              <label className="block text-slate-600 font-semibold mb-1">Department / Stream</label>
-              <input
-                type="text"
-                value={editStream}
-                onChange={(e) => setEditStream(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs outline-none"
-              />
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">Class / Grade</label>
+                <select
+                  value={editGrade}
+                  onChange={(e) => setEditGrade(e.target.value as 'FYJC' | 'SYJC')}
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-white outline-none focus:ring-1 focus:ring-[#1565C0]"
+                >
+                  <option value="FYJC">FYJC</option>
+                  <option value="SYJC">SYJC</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">Stream</label>
+                <select
+                  value={editStream}
+                  onChange={(e) => handleEditStreamChange(e.target.value as 'Science' | 'Arts')}
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-white outline-none focus:ring-1 focus:ring-[#1565C0]"
+                >
+                  <option value="Science">Science (Div A–F)</option>
+                  <option value="Arts">Arts (Div A–D)</option>
+                </select>
+              </div>
             </div>
-            <div className="flex gap-2">
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">
+                  Division ({editStream === 'Arts' ? 'A to D' : 'A to F'})
+                </label>
+                <select
+                  value={editDivision}
+                  onChange={(e) => setEditDivision(e.target.value)}
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-white outline-none focus:ring-1 focus:ring-[#1565C0]"
+                >
+                  {editAvailableDivisions.map((div) => (
+                    <option key={div} value={div}>
+                      Division {div}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">College Roll Number</label>
+                <input
+                  type="text"
+                  value={editRollNumber}
+                  onChange={(e) => setEditRollNumber(e.target.value)}
+                  placeholder="e.g. 17"
+                  className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-1 focus:ring-[#1565C0]"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="flex-1 py-1.5 rounded-xl bg-slate-100 text-slate-600 font-semibold"
+                className="flex-1 py-2 rounded-xl bg-slate-100 text-slate-600 font-semibold"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 py-1.5 rounded-xl bg-[#1565C0] text-white font-semibold"
+                className="flex-1 py-2 rounded-xl bg-[#1565C0] text-white font-semibold shadow-xs"
               >
                 Save Changes
               </button>
@@ -292,10 +366,18 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
             </div>
             <div className="flex items-center justify-between py-1.5 border-b border-slate-50">
               <span className="text-slate-500 flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-[#1565C0]" /> Class / Department
+                <GraduationCap className="w-4 h-4 text-[#1565C0]" /> Class & Stream
               </span>
               <span className="font-semibold text-slate-800">
                 {currentUser?.grade} {currentUser?.stream}
+              </span>
+            </div>
+            <div className="flex items-center justify-between py-1.5 border-b border-slate-50">
+              <span className="text-slate-500 flex items-center gap-2">
+                <Award className="w-4 h-4 text-[#1565C0]" /> Division & Roll No.
+              </span>
+              <span className="font-semibold text-slate-800">
+                Division {currentUser?.division} • Roll #{currentUser?.rollNumber}
               </span>
             </div>
             <div className="flex items-center justify-between py-1.5 border-b border-slate-50">
@@ -319,13 +401,17 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
         {activeTab === 'academic' && (
           <div className="space-y-3 text-xs">
             <div className="flex items-center justify-between py-1.5 border-b border-slate-50">
-              <span className="text-slate-500">Degree & Stream</span>
+              <span className="text-slate-500">Junior College Class</span>
+              <span className="font-semibold text-slate-800">{currentUser?.grade}</span>
+            </div>
+            <div className="flex items-center justify-between py-1.5 border-b border-slate-50">
+              <span className="text-slate-500">Academic Stream</span>
               <span className="font-semibold text-slate-800">{currentUser?.stream}</span>
             </div>
             <div className="flex items-center justify-between py-1.5 border-b border-slate-50">
               <span className="text-slate-500">Division & Roll No.</span>
               <span className="font-semibold text-slate-800">
-                Div {currentUser?.division} • Roll {currentUser?.rollNumber}
+                Div {currentUser?.division} • Roll #{currentUser?.rollNumber}
               </span>
             </div>
             <div className="flex items-center justify-between py-1.5 border-b border-slate-50">

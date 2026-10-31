@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.ruia.synchronss",
+      "sha256_cert_fingerprints": [
+        "DEFAULT_SHA256_FINGERPRINT_REPLACE_WITH_PWABUILDER_KEY"
+      ]
+    }
+  }
+]

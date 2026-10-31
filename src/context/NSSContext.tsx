@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   NSSUser,
   Activity,
+  ActivityMediaItem,
   FeedbackItem,
   Poll,
   ChatConversation,
@@ -51,6 +52,9 @@ interface NSSContextType {
   enrollInActivity: (activityId: string) => Promise<boolean>;
   cancelEnrollment: (activityId: string) => Promise<boolean>;
   verifyAttendance: (activityId: string, attendanceRecord: Record<string, boolean>) => Promise<void>;
+  // Activity Media (up to 50 items per activity, any volunteer can upload)
+  addActivityMedia: (activityId: string, url: string, caption?: string) => Promise<{ success: boolean; error?: string }>;
+  deleteActivityMedia: (activityId: string, mediaId: string) => Promise<void>;
   // Feedback & Questions
   postFeedbackOrQuestion: (activityId: string, activityTitle: string, type: 'question' | 'feedback', content: string, rating?: number) => Promise<void>;
   replyToFeedback: (feedbackId: string, reply: string) => Promise<void>;
@@ -64,6 +68,8 @@ interface NSSContextType {
   sendMessage: (chatId: string, text: string, attachment?: { name: string; size: string; type: 'doc' | 'image' }) => Promise<void>;
   // Dev promotion to PO
   switchToPOWithPassword: (password: string) => Promise<{ success: boolean; error?: string }>;
+  // Reset / reload demo suite
+  resetToDemoData: () => void;
 }
 
 const NSSContext = createContext<NSSContextType | undefined>(undefined);
@@ -90,42 +96,82 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
-  // State initialized with clean storage or empty arrays
+  // State initialized with fallback to rich Ruia College demo dataset
   const [users, setUsers] = useState<NSSUser[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_USERS_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {
+        // ignore
+      }
+    }
+    return INITIAL_USERS;
   });
 
   const [activities, setActivities] = useState<Activity[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_ACTIVITIES_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_ACTIVITIES;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {
+        // ignore
+      }
+    }
+    return INITIAL_ACTIVITIES;
   });
 
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_FEEDBACKS_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_FEEDBACKS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {
+        // ignore
+      }
+    }
+    return INITIAL_FEEDBACKS;
   });
 
   const [polls, setPolls] = useState<Poll[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_POLLS_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_POLLS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {
+        // ignore
+      }
+    }
+    return INITIAL_POLLS;
   });
 
   const [chats, setChats] = useState<ChatConversation[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_CHATS_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_CHATS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {
+        // ignore
+      }
+    }
+    return INITIAL_CHATS;
   });
 
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
-  // Current logged in user (persisted until explicit logout)
+  // Current logged in user: default to Aarav Deshpande (FYJC Science) for instant seamless web demo experience
   const [currentUser, setCurrentUser] = useState<NSSUser | null>(() => {
     const savedId = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
     if (savedId) {
       const found = users.find((u) => u.uid === savedId);
       if (found) return found;
     }
-    return null;
+    return INITIAL_USERS[0] || null;
   });
 
   // Save changes to localStorage for offline / persistence stability
@@ -542,6 +588,82 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ).catch(console.warn);
   };
 
+  // Activity Media (up to 50 items per activity, any volunteer can upload)
+  const addActivityMedia = async (activityId: string, url: string, caption?: string): Promise<{ success: boolean; error?: string }> => {
+    if (!currentUser) {
+      return { success: false, error: 'Please sign in to upload photos or media.' };
+    }
+    const act = activities.find((a) => a.id === activityId);
+    if (!act) {
+      return { success: false, error: 'Activity not found.' };
+    }
+    const currentMediaCount = (act.mediaItems?.length || 0);
+    if (currentMediaCount >= 50) {
+      return { success: false, error: 'Limit reached: Maximum 50 media items allowed per activity.' };
+    }
+
+    const newMediaItem: ActivityMediaItem = {
+      id: `media_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      url,
+      caption: caption?.trim() || undefined,
+      uploadedBy: currentUser.uid,
+      uploaderName: currentUser.fullName,
+      uploaderRole: currentUser.role,
+      uploaderGrade: currentUser.grade,
+      uploaderStream: currentUser.stream,
+      uploaderDivision: currentUser.division,
+      uploadedAt: new Date().toISOString(),
+    };
+
+    const updatedMediaItems = [...(act.mediaItems || []), newMediaItem];
+    const updatedMediaUrls = [...(act.mediaUrls || []), url];
+
+    setActivities((prev) =>
+      prev.map((a) =>
+        a.id === activityId
+          ? { ...a, mediaItems: updatedMediaItems, mediaUrls: updatedMediaUrls }
+          : a
+      )
+    );
+
+    setDoc(
+      doc(db, 'nss_activities', activityId),
+      { mediaItems: updatedMediaItems, mediaUrls: updatedMediaUrls },
+      { merge: true }
+    ).catch(console.warn);
+
+    return { success: true };
+  };
+
+  const deleteActivityMedia = async (activityId: string, mediaId: string) => {
+    const act = activities.find((a) => a.id === activityId);
+    if (!act || !act.mediaItems) return;
+    const targetItem = act.mediaItems.find((m) => m.id === mediaId);
+    if (!targetItem) return;
+
+    if (currentUser?.role !== 'po' && targetItem.uploadedBy !== currentUser?.uid) {
+      alert('You can only remove photos uploaded by yourself.');
+      return;
+    }
+
+    const updatedMediaItems = act.mediaItems.filter((m) => m.id !== mediaId);
+    const updatedMediaUrls = act.mediaUrls.filter((u) => u !== targetItem.url);
+
+    setActivities((prev) =>
+      prev.map((a) =>
+        a.id === activityId
+          ? { ...a, mediaItems: updatedMediaItems, mediaUrls: updatedMediaUrls }
+          : a
+      )
+    );
+
+    setDoc(
+      doc(db, 'nss_activities', activityId),
+      { mediaItems: updatedMediaItems, mediaUrls: updatedMediaUrls },
+      { merge: true }
+    ).catch(console.warn);
+  };
+
   // Feedback & Questions
   const postFeedbackOrQuestion = async (
     activityId: string,
@@ -726,6 +848,21 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
+  const resetToDemoData = () => {
+    setUsers(INITIAL_USERS);
+    setActivities(INITIAL_ACTIVITIES);
+    setFeedbacks(INITIAL_FEEDBACKS);
+    setPolls(INITIAL_POLLS);
+    setChats(INITIAL_CHATS);
+    setCurrentUser(INITIAL_USERS[0]);
+    localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(INITIAL_USERS));
+    localStorage.setItem(LOCAL_STORAGE_ACTIVITIES_KEY, JSON.stringify(INITIAL_ACTIVITIES));
+    localStorage.setItem(LOCAL_STORAGE_FEEDBACKS_KEY, JSON.stringify(INITIAL_FEEDBACKS));
+    localStorage.setItem(LOCAL_STORAGE_POLLS_KEY, JSON.stringify(INITIAL_POLLS));
+    localStorage.setItem(LOCAL_STORAGE_CHATS_KEY, JSON.stringify(INITIAL_CHATS));
+    localStorage.setItem(LOCAL_STORAGE_USER_KEY, INITIAL_USERS[0].uid);
+  };
+
   return (
     <NSSContext.Provider
       value={{
@@ -751,6 +888,8 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         enrollInActivity,
         cancelEnrollment,
         verifyAttendance,
+        addActivityMedia,
+        deleteActivityMedia,
         postFeedbackOrQuestion,
         replyToFeedback,
         createPoll,
@@ -760,6 +899,7 @@ export const NSSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addPollComment,
         sendMessage,
         switchToPOWithPassword,
+        resetToDemoData,
       }}
     >
       {children}

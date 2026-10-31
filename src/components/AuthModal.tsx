@@ -23,13 +23,24 @@ export const AuthModal: React.FC = () => {
   // Step 2: Name & Phone number first
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  // Step 3: Academic details: Class/Grade, Stream, Division, Roll Number
-  const [grade, setGrade] = useState('FY');
-  const [stream, setStream] = useState('B.Sc. Computer Science');
+  // Step 3: Academic details: Class/Grade (FYJC/SYJC), Stream (Science/Arts), Division (Arts: A-D, Science: A-F), Roll Number
+  const [grade, setGrade] = useState<'FYJC' | 'SYJC'>('FYJC');
+  const [stream, setStream] = useState<'Science' | 'Arts'>('Science');
   const [division, setDivision] = useState('A');
   const [rollNumber, setRollNumber] = useState('');
   const [signupSuccessId, setSignupSuccessId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleStreamChange = (newStream: 'Science' | 'Arts') => {
+    setStream(newStream);
+    if (newStream === 'Arts' && !['A', 'B', 'C', 'D'].includes(division)) {
+      setDivision('A');
+    }
+  };
+
+  const availableDivisions = stream === 'Arts'
+    ? ['A', 'B', 'C', 'D']
+    : ['A', 'B', 'C', 'D', 'E', 'F'];
 
   // If already logged in, do not display
   if (currentUser) return null;
@@ -266,6 +277,44 @@ export const AuthModal: React.FC = () => {
                 <ArrowRight className="w-4 h-4" />
               </button>
 
+              {/* Instant One-Click Demo Access for Web Testing */}
+              <div className="pt-3 border-t border-slate-100 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Instant Demo Personas
+                  </span>
+                  <span className="text-[10px] bg-blue-50 text-[#1565C0] font-semibold px-2 py-0.5 rounded-full">
+                    One-Click
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => switchUserForDemo('user_aarav_001')}
+                    className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100/80 border border-blue-200/60 text-center transition cursor-pointer"
+                  >
+                    <span className="text-[11px] font-bold text-[#1565C0] block truncate">Aarav (FYJC)</span>
+                    <span className="text-[9px] text-slate-500 block truncate">Volunteer</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => switchUserForDemo('user_riya_002')}
+                    className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200/60 text-center transition cursor-pointer"
+                  >
+                    <span className="text-[11px] font-bold text-amber-800 block truncate">Riya (SYJC)</span>
+                    <span className="text-[9px] text-slate-500 block truncate">Core Team</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => switchUserForDemo('user_po_vedant_003')}
+                    className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100/80 border border-rose-200/60 text-center transition cursor-pointer"
+                  >
+                    <span className="text-[11px] font-bold text-rose-800 block truncate">Prof. Vedant</span>
+                    <span className="text-[9px] text-slate-500 block truncate">PO Tier</span>
+                  </button>
+                </div>
+              </div>
+
             </form>
           )}
 
@@ -410,50 +459,55 @@ export const AuthModal: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700 mb-1">Class / Grade</label>
                       <select
                         value={grade}
-                        onChange={(e) => setGrade(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white outline-none"
+                        onChange={(e) => setGrade(e.target.value as 'FYJC' | 'SYJC')}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white outline-none focus:ring-1 focus:ring-[#1565C0]"
                       >
-                        <option value="FY">FY (First Year)</option>
-                        <option value="SY">SY (Second Year)</option>
-                        <option value="TY">TY (Third Year)</option>
+                        <option value="FYJC">FYJC</option>
+                        <option value="SYJC">SYJC</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Division</label>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Stream</label>
                       <select
-                        value={division}
-                        onChange={(e) => setDivision(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white outline-none"
+                        value={stream}
+                        onChange={(e) => handleStreamChange(e.target.value as 'Science' | 'Arts')}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white outline-none focus:ring-1 focus:ring-[#1565C0]"
                       >
-                        <option value="A">Division A</option>
-                        <option value="B">Division B</option>
-                        <option value="C">Division C</option>
+                        <option value="Science">Science (Div A–F)</option>
+                        <option value="Arts">Arts (Div A–D)</option>
                       </select>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Stream / Degree</label>
-                    <input
-                      type="text"
-                      required
-                      value={stream}
-                      onChange={(e) => setStream(e.target.value)}
-                      placeholder="e.g. B.Sc. Computer Science"
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#1565C0] outline-none"
-                    />
-                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        Division ({stream === 'Arts' ? 'A to D' : 'A to F'})
+                      </label>
+                      <select
+                        value={division}
+                        onChange={(e) => setDivision(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white outline-none focus:ring-1 focus:ring-[#1565C0]"
+                      >
+                        {availableDivisions.map((div) => (
+                          <option key={div} value={div}>
+                            Division {div}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">College Roll Number</label>
-                    <input
-                      type="text"
-                      required
-                      value={rollNumber}
-                      onChange={(e) => setRollNumber(e.target.value)}
-                      placeholder="e.g. 17"
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#1565C0] outline-none"
-                    />
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">College Roll Number</label>
+                      <input
+                        type="text"
+                        required
+                        value={rollNumber}
+                        onChange={(e) => setRollNumber(e.target.value)}
+                        placeholder="e.g. 17"
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-1 focus:ring-[#1565C0] outline-none"
+                      />
+                    </div>
                   </div>
 
                   <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-100 text-[11px] text-blue-900 flex items-start gap-2">
