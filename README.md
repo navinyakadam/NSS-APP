@@ -1,22 +1,22 @@
 # SynchroNSS — Volunteer & Activity Management Platform
 ### Ramnivas Ruia Autonomous College NSS Unit
 
-> **Project Note**: This application is currently an active work in progress, and community feedback is warmly welcomed. Built through hands-on exploration of modern AI-assisted development workflows, this project represents an initiative to master emerging AI engineering tools and cultivate technical adaptability in a fast-evolving software landscape.
+> **Project Note**: The core concept, feature specifications, user interface design, and bug decoding were entirely conceived and directed by the SynchroNSS team. AI engineering tools were utilized as a development partner to translate these specifications and designs into code, serving as a practical method to master modern AI-assisted development workflows. The platform is currently in its final prototype stage and is being prepared for an official presentation to college faculty, with an upcoming deployment scheduled for 100+ active volunteers across both FYJC and SYJC.
 
 SynchroNSS is a web and Android platform engineered to modernize volunteer administration and service-hour tracking for collegiate National Service Scheme (NSS) units.
 
-Volunteers frequently struggle with scattered notices, time lost sifting through disorganized chat groups, and friction in peer coordination. SynchroNSS solves this by serving as a centralized, all-in-one portal for all volunteering workflows—streamlining communications, removing logistical bottlenecks, and reducing administrative overhead by up to a third of total coordination time.
+Volunteers frequently struggle with scattered notices, time lost sifting through disorganized chat groups, and friction in peer coordination. SynchroNSS solves this by serving as a centralized, all-in-one portal for all volunteering workflows—streamlining communications, removing logistical bottlenecks, and simplifying administrative overhead across student coordination cycles.
 
 **Live Web Application**: [https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app)
 
 ---
 
-## Live Demo and Evaluation Guide
+## Developer Demo and Evaluation Guide
 
-For evaluators, admission officers, and developers who wish to explore the live application:
+For developers and technical evaluators exploring the live application:
 
 * **Direct Web Access**: Open [SynchroNSS Live Demo](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app) in any modern browser on mobile or desktop.
-* **Offline Build Bundle**: Evaluators can also download the pre-compiled distribution zip directly at [synchronss-build.zip](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app/synchronss-build.zip).
+* **Offline Build Bundle**: Developers can also inspect the pre-compiled distribution zip directly at [synchronss-build.zip](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app/synchronss-build.zip).
 * **Instant Session**: The demo initializes automatically with a pre-configured volunteer account (Aarav Deshpande, FYJC Science, Division B) to enable immediate exploration without mandatory sign-up steps.
 * **One-Click Role Switching**: Tap the profile avatar in the upper right header to switch between the three operational tiers:
   * **Volunteer Tier** (Aarav Deshpande): Browse noticeboards, register for drives, and vote in community polls.
@@ -63,11 +63,11 @@ Traditional collegiate volunteering relies heavily on ad-hoc WhatsApp groups, Go
 
 ---
 
-## Measurable Outcomes
+## Deployment Status and Rollout
 
-* **33% Reduction in Administrative Overhead**: Eliminates time lost searching for announcements, checking attendance status, and coordinating across fragmented channels.
-* **100% Privacy Protection**: Replaces public phone-number sharing in large messaging groups with role-authenticated institutional accounts.
-* **Instant Certification Readiness**: Replaces end-of-year physical logbook auditing with an auditable, real-time service hour ledger.
+* **Current Stage**: Final prototype iteration with simulated and real-time Firestore synchronization.
+* **Faculty Presentation**: Slated for formal review and adoption with college faculty and NSS Programme Officers.
+* **Target Audience**: Scheduled for deployment to 100+ active student volunteers across Junior College classes (FYJC and SYJC across Science and Arts streams).
 
 ---
 
