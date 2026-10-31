@@ -20,7 +20,6 @@ Volunteers frequently struggle with scattered notices, time lost sifting through
 For developers and technical evaluators exploring the live application:
 
 * **Direct Web Access**: Open [SynchroNSS Live Demo](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app) in any modern browser on mobile or desktop.
-* **Offline Build Bundle**: Developers can also inspect the pre-compiled distribution zip directly at [synchronss-build.zip](https://ais-pre-z4cw77ha4mpltzi2bbsomy-291104146236.asia-east1.run.app/synchronss-build.zip).
 * **Instant Session**: The demo initializes automatically with a pre-configured volunteer account (Aarav Deshpande, FYJC Science, Division B) to enable immediate exploration without mandatory sign-up steps.
 * **One-Click Role Switching**: Tap the profile avatar in the upper right header to switch between the three operational tiers:
   * **Volunteer Tier** (Aarav Deshpande): Browse noticeboards, register for drives, and vote in community polls.
