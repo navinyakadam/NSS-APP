@@ -1,7 +1,7 @@
 # SynchroNSS — Volunteer & Activity Management Platform
 ### Ramnivas Ruia Autonomous College NSS Unit
 
-> **Project Note**: The core concept, feature specifications, user interface design, and bug decoding were entirely conceived and directed by the SynchroNSS team:
+> **Project Note**: The core concept, feature specifications, user interface design, and bug decoding were conceived and directed by the SynchroNSS team:
 > * **Lead Developer**: Navinya Kadam (System architecture, technical specifications, workflow logic, and bug resolution)
 > * **Lead Designer**: Kanak Mhapuskar (Product design, user experience workflows, interface layouts, and visual system)
 > 
@@ -63,7 +63,7 @@ Traditional collegiate volunteering relies heavily on ad-hoc WhatsApp groups, Go
 
 * **Academic Master Directory vs. Unindexed Phone Contacts**
   * *Traditional Method*: Volunteer contacts remain unsaved or disorganized, causing delays when forming division-specific task forces or handling field emergencies.
-  * *Intended Solution*: Directly integrated with the college roster (categorized across FYJC/SYJC Science and Arts divisions) to facilitate instant peer identification and role assignment.
+  * *Intended Solution*: Designed to integrate with the college roster (the demo uses sample data) categorized across FYJC/SYJC Science and Arts divisions to facilitate instant peer identification and role assignment.
 
 ---
 
